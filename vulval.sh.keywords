@@ -1,0 +1,7 @@
+fork clone execl execve execveat fexecve
+chmod ptrace credentials capabilities
+env bash ksh tcsh sh csh login 
+printenv clearenv getenv putenv setenv unsetenv environ
+ioctl console_ioctl tty_ioctl sd tty
+accept connect bind listen socket select getsockname
+readlink capabilities credentials symlink path_resolution

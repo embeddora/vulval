@@ -1,0 +1,134 @@
+/*! \mainpage Main Page of Project 'Vulneribility Valuator'
+ *
+
+\section SEC11 Vulneribility Valuator
+
+\subsection SUBSEC111 Introduction
+
+ A project "Vulneribility Valuator" (or "vulval", for short) is purposed for parsing contents of series of binary and text files to figure out if they may cause any kind of vulnerability - those already known or those yet not discovered (but possible from theoretical point of view).
+
+\subsection SUBSEC112 Project Workflow
+
+ A check of binary files is done by attempting to locate a dedicated code fragment (also known as 'shellcode') in bodies of these binary files. A check of text files is done by same attempting to locate a special text fragment (called an 'exploit') in body of each text file checked.
+
+ It's assumed however that most hazardous 'shellcodes' to cause (real or possible only theoretically) vulnerabilities are enrolled into project as binary arrays within files 'shellcode.mips', 'shellcode.arm', as well as 'exploits' to cause (again - real of theoretically possible) - into 'exploit.any' file.
+
+\subsection SUBSEC113 Result Reliability
+
+ Going from assumption that not all of 'shellcodes' and 'exploits' enrolled may result in apparent and inevitable system vulnerability the results of vulnerability detection (performed by 'Vulval' project) should be percepted with certain desgree of tolerance (in order to minimize negative effect of inaccuracy of hazard detection model implemented). Small files and files of atypical structure are excluded from vulerability search as those which may not cause any vulnerability under any kind of misuse.
+
+\subsection SUBSEC114 Tangible Outcome
+
+ On search finalization results of search are stored in HTML format in '_report.html' and '_report.ext.html' files in local folder.
+
+\section SEC12 Implementation
+
+\subsection SUBSEC121 Shell Script 'vulval.sh'
+
+ A 'bash' shell script named 'vulval.sh' is a main part of the project. Together with its library - 'vulval.sh.inc' - it provides target directory check-up on which it accesses each file within this directory, figuring out certain valuable facts about these files such as file creation time, presence (complete or partial) of possible vulnerabilities in it, etc. The distinguishing between MIPS and ARM binaries is not undertaken by current implementation of 'vulval.sh', since by now it seems to be questionable whether the 'vulval.sh' has to perform it. (Clarification: it's also possible to delegate this task to below routine 'vulval' which might process this task better.) 
+
+\subsection SUBSEC122 Executable 'vulval', a Command-line Application
+
+ A compiled set of C++ routines which on linkage become an ELF-executable 'vulval' performs core activity behind target file classification (to detect whether it's a binary or a text file) and then - performs an attemp to find any of known shellcodes (for MIPS - file 'shellcode.mips', for ARM - 'shellcode.arm') for those binary and an attempt to find any of known exploits (file 'exploit.any' - regardless of target platform kind) for text files.
+
+ A main purpose of 'vulval' routine is to put on STDOUT a series of messages in respect to each file checked accesses. These messages the are collected from STDOUT by 'vulval.sh' and placed into '_report.ext.html' file (in local oflder).
+
+\subsection SUBSEC123 Coding Efforts Appraisal
+
+ The project 'Vulval' consists of 23 unique code files, per-file statistics of which is as bellow:
+
+File                            |blank        |comment           |code
+--------------------------------|-------------|------------------|-------------
+shellcode.mips                  |   27        |     68           | 232
+shellcode.arm                   |   15        |     46           | 192
+shellcode.cpp                   |   49        |    141           | 107
+vulval.sh.inc                   |   45        |     61           |  82
+exploit.cpp                     |   27        |    113           |  70
+vulval.sh                       |   63        |     86           |  67
+vulval.cpp                      |   46        |     91           |  66
+hazent.cpp                      |   37        |    153           |  56
+buffer.cpp                      |   34        |     85           |  46
+Makefile                        |   22        |     55           |  38
+hazent.hpp                      |   25        |     36           |  31
+buffer.hpp                      |   20        |     40           |  24
+file.cpp                        |   17        |     84           |  22
+shellcode.hpp                   |   16        |     32           |  18
+file.hpp                        |   13        |     33           |  17
+exploit.any                     |   14        |    100           |  15
+exploit.hpp                     |   11        |     32           |  15
+datent.hpp                      |    6        |     31           |   9
+datent.cpp                      |    7        |     56           |   8
+SUM:                            |  494        |   1343           | 1115
+
+ Which means that 1115 code lines were produced and 1343 comments were written to desctibe the code. Considering that captions are present on begin of each code file the further growth of the C++ code itself (without multiplicating an amount of code files) will lower down 'code-to-comments' ratio, whilst introduing new source files will increase it. Since having each line of code commented is known to be a good practice, a present 'code-to-comments' ratio can be admitted as affordable.
+
+ A per-language statistics (given in table below) shows that actual project is purely C++ project (as it does not deploy any alien matters such as languages ANSI C, Python, etc) being used in conjunction with shell script (written on Bourne Again Shell scripting language).
+
+Language                   |  files      |    blank      |  comment   |   code
+---------------------------|-------------|---------------|------------|---------
+C/C++ Header               |      9      |     147       |     418    |    553
+C++                        |      7      |     217       |     723    |    375
+Bourne Shell               |      2      |     108       |     147    |    149
+make                       |      1      |      22       |      55    |     38
+SUM:                       |     19      |     494       |    1343    |   1115
+
+ It uses Makeile for bulding, though the good practice is to use CMake build system for C++ projects, and it does not posses any heavy dependency on third-part components and software manyfacturing instruments (e.g. tool chains, etc). In all, the current implementation can be recognized as affordable with certain nice-to-have recomnedadtion (see following chapter) to be considered while the presumed project futher evaluation.
+
+\subsection SUBSEC124 Further Evaluation
+
+ Apparently, enrolling new entries into 'shellcode.mips','shellcode.arm' and 'exploit.any' is going to boost an efficiency of vulnerability search implemented in 'vulval' routine.
+
+ At the same time a distinguishing between ARM and MIPS platforms should be done somewhere since it's rather pointless to parse MIPS-binaries for presence of ARM-malware framents (also known as 'hazardous entries'). Scalling this logics onto generalized case it's nice-to-implement a platform classification prior to fragments search (and only after this to search hazardous entries, a.k.a. 'exploits'). To the moment there about two decades of different ARMx platforms actively used in embedded/IoT hardware and approximately the same volume of MIPSx platforms - for each instance of platform the hazardous entries search has to be customized. Different binary formats of (executable and libraries) have to be differentiated, too, since not all of the systems run EABI/ABI or ELF code. This complicates the otherwise simple task up to task of collecing and maintaining a large database of known malware signatures. On the other hand, current implementation (mostly C++ code) does not impose any significant impediments to such a 'new' task, and that is why it's recommended to evaluate current code for achieving this aim without heavy code-and-design refactoring.
+
+ CMake-based build to be introduced instead of Makefile-based one for multiple reasons. Two of which are: a) CMake is more efficient with C++ projects and b) present implementation of Makefile does not keep a track of headers being altered, which means that 'make clean; make all' has to be executed each time the class type (in '*.hpp' file) has been changed.
+
+ Finally the form of statistics representation in '_report.html' and '_report.ext.html' files to be redesigned - this is to make it more readable and to let user to get more out of it.
+
+\section SEC13 Usage
+
+\subsection SUBSEC131 System and Run Time Requirements
+
+ The 'Ubuntu 16.04 LTS' with following set of packages (to be installed by 'apt-get install') if required for project compilation and run:
+
+ Package                       |  Details
+-------------------------------|----------------------------------------------------------------------------------------------------------------------
+build-essential                | a C++ compiler and Make system   
+libboost-all-dev               | a set of Boost libraries some of which are used by 'vulval'  routine
+doxygen                        | (optional) a Doxygen documentation generation system 
+graphviz                       | (optional) an accessory for Doxygen documentation generation system (for Latex/PDF) 
+texlive-full                   | (optional) an accessory for Doxygen documentation generation system (for Latex/PDF) 
+binutils-arm-linux-gnueabi (*) | (optional) a toolchain with 'arm-linux-gnueabi-objdump' and 'arm-linux-gnueabi-readelf' used by 'vulval.sh'
+binutils-mips-linux-gnu        | (optional) a toolchain with 'mips-linux-gnu-objdump' and 'mips-linux-gnu-readelf' used by 'vulval.sh'
+
+(*) - an installation of additional packages 'libc6-armel-cross' and 'libc6-dev-armel-cross' might be required on certain configurations
+
+ In case on certain setup of 'Ubuntu 16.04 LTS' the above set appears to be insufficient for normal compilation and run of the project, report an issue to the project author(s) or contributor (see authorship entries in this document below, or - alternatively - in source files).
+
+\subsection SUBSEC132 Typical Use-case
+
+ The usage, as prescribed in caption of 'vulval.sh',  is: vulval.sh <SOME_DIRECTORY_NAME>,  where <SOME_DIRECTORY_NAME> is the place the root filesystem of embedded firmware has been extracted to.
+
+ For instance, at <https://github.com/embeddora/upload/Edimax_7010PT> one may take an archive with root filesystem if 'IC-7010PTn_EDIMAX' hardware (which is a web-camera of Edimax Company), then - to unpack it and to extract a filesystem of it into local folder named <IC7010-squashfs-root>. And running: "vulval.sh ./IC7010-squashfs-root" will start the script. (A project workflow progress will be defined as series of dots appearing on command line.) On script successful execution the '_report.html' and '_report.ext.html' files should appear in local folder. Opening a '_report.html' file in browser and navigating through dedicated hyper-references into '_report.ext.html' file (where all the details of vulnerability detection are stored) supplies an ultime result of the project - a per-file statistics of each file checked with focus on which vulnerability has been found in it, and, in certain cases (see 'continue' intruction in 'vulval.sh' bash shell script), other details.
+
+\subsection SUBSEC133 Know Restrictions
+
+ No restrictions or specific system requirements exceeding these defined by "System and Run Time Requirements" are known to the moment. It's recommended to run the project from within regular user, no root privelegies are required.
+
+\section SEC14 Legal Info
+
+\subsection SUBSEC141 Company Info and Copyright Entry
+
+ Embeddora LTD ("COMPANY") CONFIDENTIAL
+
+ Unpublished Copyright (c) 2017-2018 Embeddora LTD, All Rights Reserved.
+
+\subsection SUBSEC142 Notice
+ 
+ All information contained herein is, and remains the property of COMPANY. The intellectual and technical concepts contained  herein are proprietary to  COMPANY and may be covered by U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law.  Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from COMPANY. Access to the source code contained herein is hereby forbidden to anyone except current COMPANY employees, managers or contractors who have executed Confidentiality and Non-disclosure agreements explicitly covering such access.
+
+\subsection SUBSEC143 Copyright Disambiguation
+
+ The copyright notice above does not evidence any actual or intended publication or disclosure of this source code, which includes information that is confidential and/or proprietary, and is a trade secret, of COMPANY. ANY REPRODUCTION, MODIFICATION, DISTRIBUTION, PUBLIC PERFORMANCE, OR PUBLIC DISPLAY OF OR THROUGH USE OF THIS SOURCE CODE WITHOUT THE EXPRESS WRITTEN CONSENT OF COMPANY IS STRICTLY PROHIBITED, AND IN VIOLATION OF APPLICABLE LAWS AND INTERNATIONAL TREATIES. THE RECEIPT OR POSSESSION OF THIS SOURCE CODE AND/OR RELATED INFORMATION DOES NOT CONVEY OR IMPLY ANY RIGHTS TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT MAY DESCRIBE, IN WHOLE OR IN PART.
+
+ */
+

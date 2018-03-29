@@ -76,7 +76,11 @@ sudo apt-get install firefox
 )
 
 
+cppcheck  --enable=all  debug -v --xml  --xml-version=2   --platform=unix32 --std=posix --std=c99 ./ 2>_XML_FNAME 1>>_LOG_AUX
+cppcheck-htmlreport   --title="Errors and Warnings" --report-dir=__A__ --source-dir=./ --file=_XML_FNAME 
 
+cppcheck --check-config  --enable=all  debug -v --xml  --xml-version=2   --platform=unix32 --std=posix --std=c99 ./ 2>_XML_FNAME 1>>_LOG_AUX
+cppcheck-htmlreport   --title="Errors and Warnings" --report-dir=__A__ --source-dir=./ --file=_XML_FNAME 
 
 
 

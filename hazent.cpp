@@ -64,7 +64,7 @@ using namespace std;
 ///	@return		none
 ///
 ///	An auxiliary function, could be removed upon optimization
-Hazent::Hazent(std::string fullname): credentials (fullname)
+Hazent::Hazent(const std::string& fullname): credentials (fullname)
 {
 	// Put known hazardous entries into 'ha_hazent'
 	setVectorData();

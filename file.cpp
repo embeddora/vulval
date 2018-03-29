@@ -52,10 +52,17 @@
 ///
 ///	@return		none
 ///
-///	A default contructor of 'File' class needed for we instatiate the class prior to knwowing if the filename (given via command line) is valid
+///	A default contructor of 'File' class needed for we instatiate the class prior to knwowing if the filename (given via command line) is valid. Also sets default values to class members to avoid code quality warning CWE#398.
 File::File()
 {
-	// N/a
+	// Assign default value
+	size = 0;
+
+	// Assign default value
+	memblock = NULL;
+
+	// Assign default value
+	entr = -0.0;
 
 } // File::File()
 
@@ -69,10 +76,17 @@ File::File()
 ///
 ///	@return		none
 ///
-///	A constructor of 'File' class with real name of a target file; needed for we reinitialize class instance when the target file name is recognized to be valid
-File::File(std::string Filename) : filename(Filename)
+///	A constructor of 'File' class with real name of a target file; needed for we reinitialize class instance when the target file name is recognized to be valid. Also sets default values to class members to avoid code quality warning CWE#398.
+File::File(const std::string& Filename) : filename(Filename)
 {
-	// N/a
+	// Assign default value
+	size = 0;
+
+	// Assign default value
+	memblock = NULL;
+
+	// Assign default value
+	entr = -0.0;
 
 } // File::File()
 

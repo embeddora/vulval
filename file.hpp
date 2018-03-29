@@ -46,7 +46,7 @@ class File : public Datent
 public:
 	File();///< A default constructor of a 'File' class
 
-	File(std::string Filename);///< A constructor of a 'File' class to assign a current file name
+	File(const std::string& Filename);///< A constructor of a 'File' class to assign a current file name
 
 	~File();///< A desctructor, no functionality by the moment
 

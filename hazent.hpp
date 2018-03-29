@@ -66,7 +66,7 @@ typedef struct _hazentry
 class Hazent
 {
 public:
-	Hazent(std::string fullname);///< Constructor, here empty vector of hazardous entries gets initialized
+	Hazent(const std::string& fullname);///< Constructor, here empty vector of hazardous entries gets initialized
 
 	~Hazent();///< Desctructor, no functionality by the moment
 

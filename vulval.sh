@@ -108,8 +108,8 @@ CURDIR=`eval pwd | awk '{ print $0 }' `
 # Initialize step counter
 i=0
 
-# Throughout all files within currect folder, recursively 
-for FNAME in `find "$1" -type f`
+# Throughout all files within target folder(s), recursively, and suppress error messages
+for FNAME in `find "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8" "$9" -type f 2>/dev/null`
 
 do
 	# Don't process those excluded from search

@@ -1,3 +1,4 @@
+#!/bin/bash
 #
 # Copyright (c) 2018 [n/a] info@embeddora.com All rights reserved
 #
@@ -132,7 +133,7 @@ do
 
 		echo "<hr noshade>" >> $LOG_EXT
 
-		ATY=`./vulval $FNAME`
+		ATY=`./"$ROUTINE_FILE" $FNAME`
 		AT=${ATY//$'\n'/$'\n'<br>}
 
 		echo "<br>$AT<br>" >> $LOG_EXT

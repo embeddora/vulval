@@ -109,8 +109,8 @@ CURDIR=`eval pwd | awk '{ print $0 }' `
 # Initialize step counter
 i=0
 
-# Throughout all files within target folder(s), recursively, and suppress error messages
-for FNAME in `find "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8" "$9" -type f 2>/dev/null`
+# Recursively throughout all the files contained in all of target folders, suppressing error messages
+for FNAME in `find "$@" -type f 2>/dev/null`
 
 do
 	# Don't process those excluded from search
@@ -133,6 +133,8 @@ do
 
 		echo "<hr noshade>" >> $LOG_EXT
 
+		#ATY=`valgrind --tool=massif  ./"$ROUTINE_FILE" $FNAME`
+		#ATY=`valgrind --tool=callgrind  ./"$ROUTINE_FILE" $FNAME`
 		ATY=`./"$ROUTINE_FILE" $FNAME`
 		AT=${ATY//$'\n'/$'\n'<br>}
 
